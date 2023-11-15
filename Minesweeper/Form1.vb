@@ -8,37 +8,16 @@
     Public ClickedMines As Integer = 0
     Public WrongClicks As Integer = 0
     Public FirstClick As Boolean = True
+    Public MinesPer100 As Integer = 30
 
 
     Private Sub Button_Click(sender As Object, e As EventArgs)
 
-        Dim Position As String = sender.tag
-        Dim Pos_y As Integer = CInt(Position.Split("_")(0))
-        Dim Pos_x As Integer = CInt(Position.Split("_")(1))
-        Dim Button As Button = DirectCast(sender, Button)
 
-        If FirstClick Then
-            Fill_Field_Matrix(Pos_y, Pos_x)
-            FirstClick = False
-        End If
-        'MsgBox("Y:" & Pos_y & " X: " & Pos_x & vbNewLine & "Value: " & Field(Pos_y, Pos_x))
-
-        If Button.Text = "F" Then
-            Exit Sub
-        End If
-        If Field(Pos_y, Pos_x) >= 9 Then
-            MsgBox("You Lose")
-            Reveal_Mines()
-            Exit Sub
-        Else
-            Button.Text = Field(Pos_y, Pos_x)
-            Button.Enabled = False
-        End If
-        FieldsClicked += 1
     End Sub
 
     Private Sub Button_MouseClick(sender As Object, e As MouseEventArgs)
-        ' Right-click event handling logic
+        'Right-click event handling logic
         Dim Button As Button = DirectCast(sender, Button)
         Dim Position As String = sender.tag
         Dim Pos_y As Integer = CInt(Position.Split("_")(0))
@@ -67,15 +46,46 @@
                 End If
             End If
             _lbl_flages_left.Text = Mines - FlagesPlaces
+        Else
+            If FirstClick Then
+                Fill_Field_Matrix(Pos_y, Pos_x)
+                FirstClick = False
+            End If
+
+            FieldsClicked += 1
+            'MsgBox("Y:" & Pos_y & " X: " & Pos_x & vbNewLine & "Value: " & Field(Pos_y, Pos_x))
+
+            If Button.Text = "F" Then
+                Exit Sub
+            End If
+            If Field(Pos_y, Pos_x) >= 9 Then
+                lose_sound()
+                MsgBox("You Lose")
+                Reveal_Mines()
+                FirstClick = True
+                Exit Sub
+            Else
+                Button.Text = Field(Pos_y, Pos_x)
+                Button.Enabled = False
+            End If
         End If
 
         If MinesFound = Mines And (FieldSize * FieldSize) = FieldsClicked Then
+            win_sound()
             MsgBox("You Win")
-
+            Reveal_Mines()
+            FirstClick = True
         End If
     End Sub
 
     Private Sub DeleteButtonMatrix()
+
+        For i As Integer = 0 To 30
+            For j As Integer = 0 To 30
+                Field(i, j) = 0
+            Next
+        Next
+
         Dim buttonsToDelete As New List(Of Control)
 
         ' Collect buttons with a specific naming pattern
@@ -106,9 +116,8 @@
         End If
         DeleteButtonMatrix()
         Build_Fieled()
-
-
-        _lbl_flages_left.Text = Mines - FlagesPlaces
+        _lbl_flages_left.Text = ""
+        _lbl_fields.Text = FieldSize * FieldSize
     End Sub
 
 
@@ -144,13 +153,9 @@
         Mines = 0
         MinesFound = 0
         FlagesPlaces = 0
+        Integer.TryParse(_txt_minesp.Text, MinesPer100)
         Dim rand As New Random()
         Dim threshold As Double = 0.3 ' 30% chance for 9
-        For i As Integer = 0 To FieldSize - 1
-            For j As Integer = 0 To FieldSize - 1
-                Field(i, j) = 0
-            Next
-        Next
 
         For i As Integer = 0 To FieldSize - 1
             For j As Integer = 0 To FieldSize - 1
@@ -278,6 +283,26 @@
             For j As Integer = 0 To FieldSize - 1
                 Field(i, j) = 0
             Next
+        Next
+    End Sub
+
+    Sub lose_sound()
+        ' Loss melody
+        Dim melodyFreq() As Integer = {784, 698, 659, 587, 523, 494, 440, 392} ' Frequencies of the melody notes
+        Dim noteDuration As Integer = 300 ' Duration of each note in milliseconds
+
+        For Each freq As Integer In melodyFreq
+            Console.Beep(freq, noteDuration)
+        Next
+    End Sub
+
+    Sub win_sound()
+        ' Victory melody
+        Dim melodyFreq() As Integer = {392, 440, 494, 523, 587, 659, 698, 784} ' Frequencies of the melody notes
+        Dim noteDuration As Integer = 300 ' Duration of each note in milliseconds
+
+        For Each freq As Integer In melodyFreq
+            Console.Beep(freq, noteDuration)
         Next
     End Sub
 End Class
