@@ -24,7 +24,9 @@
         Dim Pos_x As Integer = CInt(Position.Split("_")(1))
         If FirstClick Then
             Fill_Field_Matrix(Pos_y, Pos_x)
+            check_first_radius(Pos_y, Pos_x)
             FirstClick = False
+            _lbl_flages_left.Text = Mines - FlagesPlaces
         End If
 
         If e.Button = MouseButtons.Right Then
@@ -59,9 +61,10 @@
                 Exit Sub
             End If
             If Field(Pos_y, Pos_x) >= 9 Then
-                lose_sound()
-                MsgBox("You Lose")
                 Reveal_Mines()
+                _lbl_start_lose.Text = "You Lose"
+                _lbl_start_lose.Refresh()
+                lose_sound()
                 FirstClick = True
                 Exit Sub
             Else
@@ -69,16 +72,22 @@
                 Button.Enabled = False
             End If
         End If
-
+        'MsgBox(MinesFound & " == " & Mines & " AND " & (FieldSize * FieldSize) & " == " & FieldsClicked)
         If MinesFound = Mines And (FieldSize * FieldSize) = FieldsClicked Then
-            win_sound()
-            MsgBox("You Win")
             Reveal_Mines()
+            _lbl_start_lose.Text = "You Win"
+            _lbl_start_lose.Refresh()
+            win_sound()
             FirstClick = True
         End If
     End Sub
 
     Private Sub DeleteButtonMatrix()
+        FieldsClicked = 0
+        FlagesPlaces = 0
+        MinesFound = 0
+        Mines = 0
+        _lbl_start_lose.Text = ""
 
         For i As Integer = 0 To 30
             For j As Integer = 0 To 30
@@ -103,6 +112,7 @@
     End Sub
 
     Private Sub btn_start_Click(sender As Object, e As EventArgs) Handles btn_start.Click
+        FirstClick = True
         If Integer.TryParse(_txt_size.Text, Nothing) Then
             FieldSize = CInt(_txt_size.Text)
             'MsgBox("Field Size: " & FieldSize)
@@ -153,10 +163,12 @@
         Mines = 0
         MinesFound = 0
         FlagesPlaces = 0
-        Integer.TryParse(_txt_minesp.Text, MinesPer100)
         Dim rand As New Random()
         Dim threshold As Double = 0.3 ' 30% chance for 9
 
+        If Integer.TryParse(_txt_minesp.Text, MinesPer100) Then
+            threshold = MinesPer100 / 100
+        End If
         For i As Integer = 0 To FieldSize - 1
             For j As Integer = 0 To FieldSize - 1
                 If i = y AndAlso j = x Then
@@ -180,86 +192,63 @@
         'PrintArrayInMessageBox()
     End Sub
 
-    Private Sub PrintArrayInMessageBox()
-        Dim output As String = ""
+    Private Sub check_mine_radius(x, y)
+        Dim Buttons As New List(Of String)
 
-        For i As Integer = 0 To Field.GetUpperBound(0) ' Iterate through rows
-            Dim rowString As String = ""
+        Dim radius As Integer = 1
 
-            For j As Integer = 0 To Field.GetUpperBound(1) ' Iterate through columns
-                rowString &= Field(i, j).ToString() & " " ' Add each element to the row string
+        For i As Integer = -radius To radius
+            For j As Integer = -radius To radius
+                If i = 0 And j = 0 Then Continue For
+
+                Buttons.Add("fld_" & (x + i) & "_" & (y + j))
             Next
-
-            output &= rowString.Trim() & vbCrLf ' Add the row to the output string with a newline
+        Next
+        For Each btn As String In Buttons
+            If Not Me.Controls.ContainsKey(btn) Then
+                Continue For
+            Else
+                Field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2))) += 1
+            End If
         Next
 
-        MessageBox.Show(output) ' Display the whole array in a message box
     End Sub
 
-    Private Sub check_mine_radius(x, y)
-        Try
-            If Integer.TryParse(Field(x - 1, y), Nothing) Then
-                Field(x - 1, y) = CInt(Field(x - 1, y)) + 1
+    Private Sub check_first_radius(x, y)
+        Dim Buttons As New List(Of String)
+
+        Dim radius As Integer = 1
+        Integer.TryParse(txt_helperr.Text, radius)
+
+        For i As Integer = -radius To radius
+            For j As Integer = -radius To radius
+                If i = 0 And j = 0 Then Continue For
+
+                Buttons.Add("fld_" & (x + i) & "_" & (y + j))
+            Next
+        Next
+
+        For Each btn As String In Buttons
+            If Not Me.Controls.ContainsKey(btn) Then
+                Continue For
             End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x - 1, y - 1), Nothing) Then
-                Field(x - 1, y - 1) = CInt(Field(x - 1, y - 1)) + 1
+            If Field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2))) >= 9 Then
+                FieldsClicked += 1
+                FlagesPlaces += 1
+                MinesFound += 1
+                Me.Controls.Item(btn).Text = "F"
+                Me.Controls.Item(btn).ForeColor = Color.Red
+            Else
+                Me.Controls.Item(btn).Enabled = False
+                Me.Controls.Item(btn).Text = Field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2)))
+                FieldsClicked += 1
             End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x, y - 1), Nothing) Then
-                Field(x, y - 1) = CInt(Field(x, y - 1)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x + 1, y), Nothing) Then
-                Field(x + 1, y) = CInt(Field(x + 1, y)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x + 1, y + 1), Nothing) Then
-                Field(x + 1, y + 1) = CInt(Field(x + 1, y + 1)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x, y + 1), Nothing) Then
-                Field(x, y + 1) = CInt(Field(x, y + 1)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x - 1, y + 1), Nothing) Then
-                Field(x - 1, y + 1) = CInt(Field(x - 1, y + 1)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
-
-        Try
-            If Integer.TryParse(Field(x + 1, y - 1), Nothing) Then
-                Field(x + 1, y - 1) = CInt(Field(x + 1, y - 1)) + 1
-            End If
-        Catch ex As Exception
-
-        End Try
+        Next
+        If FieldsClicked = (FieldSize * FieldSize) Then
+            MsgBox("You Win")
+            Reveal_Mines()
+            FirstClick = True
+        End If
     End Sub
 
 
