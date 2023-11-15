@@ -83,7 +83,7 @@ Partial Class Minesweeper
         Me.Controls.Add(Me.btn_start)
         Me.Controls.Add(Me.txt_size)
         Me.Name = "Minesweeper"
-        Me.Text = "Form1"
+        Me.Text = "Minesweeper"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
