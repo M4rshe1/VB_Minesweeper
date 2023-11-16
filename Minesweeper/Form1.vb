@@ -8,6 +8,9 @@
     Public FirstClick As Boolean = True
     Public MinesPer100 As Integer = 30
     Public Reveal_Mode As Boolean = False
+    Public FoundZero As Boolean = False
+    Public Visited(30, 30) As Boolean
+
 
     Private Sub Button_MouseClick(sender As Object, e As MouseEventArgs)
         Dim Button As Button = DirectCast(sender, Button)
@@ -20,7 +23,7 @@
             FirstClick = False
             _lbl_flages_left.Text = Mines - FlagesPlaces
         End If
-
+        'Normal Right Click
         If e.Button = MouseButtons.Right Then
             If Button.Text = "" AndAlso FlagesPlaces < Mines Then
                 Button.Text = "F"
@@ -40,6 +43,8 @@
                 End If
             End If
             _lbl_flages_left.Text = Mines - FlagesPlaces
+
+            'Reveal Mode Enabled
         ElseIf Reveal_Mode Then
             FirstClick = False
             If Button.Text = "F" Then
@@ -55,15 +60,15 @@
             Else
                 Button.Text = Field(Pos_y, Pos_x)
                 Button.Enabled = False
-                Button.Text = Field(Pos_y, Pos_x)
             End If
             Button.Refresh()
+            CheckSurroundingZeros(Pos_y, Pos_x)
+            'Normal Left Click
         Else
             If FirstClick Then
                 Fill_Field_Matrix(Pos_y, Pos_x)
                 FirstClick = False
             End If
-
             FieldsClicked += 1
             'MsgBox("Y:" & Pos_y & " X: " & Pos_x & vbNewLine & "Value: " & Field(Pos_y, Pos_x))
 
@@ -80,6 +85,7 @@
             Else
                 Button.Text = Field(Pos_y, Pos_x)
                 Button.Enabled = False
+                CheckSurroundingZeros(Pos_y, Pos_x)
             End If
         End If
         'MsgBox(MinesFound & " == " & Mines & " AND " & (FieldSize * FieldSize) & " == " & FieldsClicked)
@@ -93,6 +99,7 @@
     End Sub
 
     Private Sub DeleteButtonMatrix()
+
         FieldsClicked = 0
         FlagesPlaces = 0
         MinesFound = 0
@@ -103,6 +110,7 @@
         For i As Integer = 0 To 30
             For j As Integer = 0 To 30
                 Field(i, j) = 0
+                Visited(i, j) = False
             Next
         Next
 
@@ -158,8 +166,7 @@
                 newButton.Tag = $"{i}_{j}"
                 newButton.Name = $"fld_{i}_{j}"
                 newButton.Font = New Font(newButton.Font, FontStyle.Bold)
-
-                AddHandler newButton.Click, AddressOf Button_Click
+                
                 AddHandler newButton.MouseUp, AddressOf Button_MouseClick
 
 
@@ -239,16 +246,21 @@
                 Continue For
             End If
             If Field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2))) >= 9 Then
+                Dim CurBtn As Button = DirectCast(Me.Controls.Item(btn), Button)
                 FieldsClicked += 1
                 FlagesPlaces += 1
                 MinesFound += 1
-                Me.Controls.Item(btn).Text = "F"
-                Me.Controls.Item(btn).ForeColor = Color.Red
+                CurBtn.Text = "F"
+                CurBtn.ForeColor = Color.Red
             Else
                 Me.Controls.Item(btn).Enabled = False
                 Me.Controls.Item(btn).Text = Field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2)))
                 FieldsClicked += 1
+                Me.Controls.Item(btn).Refresh()
             End If
+        Next
+        For Each btn As String In Buttons
+            CheckSurroundingZeros(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2)))
         Next
         If FieldsClicked = (FieldSize * FieldSize) Then
             MsgBox("You Win")
@@ -279,6 +291,17 @@
         _txt_size.Text = 12
         _lbl_flages_left.Text = ""
         _lbl_fields.Text = ""
+        _lbl_start_lose.Text = ""
+        FirstClick = True
+        Mines = 0
+        MinesFound = 0
+        FieldSize = 12
+        FlagesPlaces = 0
+        FieldsClicked = 0
+        FirstClick = True
+        MinesPer100 = 30
+        Reveal_Mode = False
+        reveal_btn.Text = "Reveal: OFF"
     End Sub
 
     Sub lose_sound()
@@ -329,10 +352,43 @@
                         btn.Text = ""
                         FlagesPlaces -= 1
                         FieldsClicked -= 1
+                    Else
+                        'btn.Enabled = False
                     End If
                 End If
             Next
         Next
         _lbl_flages_left.Text = Mines - FlagesPlaces
     End Sub
+
+    Private Sub CheckSurroundingZeros(ByVal y As Integer, ByVal x As Integer)
+        If y >= 0 AndAlso y < Field.GetLength(0) AndAlso x >= 0 AndAlso x < Field.GetLength(1) Then
+            If Field(y, x) = 0 AndAlso Not Visited(y, x) Then
+                Dim controlName As String = "fld_" & y & "_" & x
+
+                ' Check if the control exists and is a Button
+                If Me.Controls.ContainsKey(controlName) AndAlso TypeOf Me.Controls(controlName) Is Button Then
+                    Dim btn As Button = DirectCast(Me.Controls(controlName), Button)
+
+                    ' Update the button properties
+                    btn.Text = Field(y, x)
+                    If Not btn.Enabled = False Then
+                        FieldsClicked += 1
+                        btn.Enabled = False
+                    End If
+
+                    ' Mark the current cell as visited
+                    Visited(y, x) = True
+
+                    ' Check surrounding cells recursively
+                    CheckSurroundingZeros(y - 1, x) ' Up
+                    CheckSurroundingZeros(y + 1, x) ' Down
+                    CheckSurroundingZeros(y, x - 1) ' Left
+                    CheckSurroundingZeros(y, x + 1) ' Right
+                End If
+            End If
+        End If
+    End Sub
+
+
 End Class
