@@ -24,7 +24,7 @@ Partial Class Minesweeper
     Private Sub InitializeComponent()
         Me.txt_size = New System.Windows.Forms.TextBox()
         Me.btn_start = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.reset_btn = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.lbl_flages_left = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -35,6 +35,9 @@ Partial Class Minesweeper
         Me.lbl_start_lose = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txt_helperr = New System.Windows.Forms.TextBox()
+        Me.reveal_btn = New System.Windows.Forms.Button()
+        Me.check_flags_btn = New System.Windows.Forms.Button()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'txt_size
@@ -57,15 +60,15 @@ Partial Class Minesweeper
         Me.btn_start.Text = "Start"
         Me.btn_start.UseVisualStyleBackColor = True
         '
-        'Button2
+        'reset_btn
         '
-        Me.Button2.Location = New System.Drawing.Point(359, 21)
-        Me.Button2.Margin = New System.Windows.Forms.Padding(2)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(49, 32)
-        Me.Button2.TabIndex = 3
-        Me.Button2.Text = "Reset"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.reset_btn.Location = New System.Drawing.Point(359, 21)
+        Me.reset_btn.Margin = New System.Windows.Forms.Padding(2)
+        Me.reset_btn.Name = "reset_btn"
+        Me.reset_btn.Size = New System.Drawing.Size(49, 32)
+        Me.reset_btn.TabIndex = 3
+        Me.reset_btn.Text = "Reset"
+        Me.reset_btn.UseVisualStyleBackColor = True
         '
         'Label1
         '
@@ -139,7 +142,7 @@ Partial Class Minesweeper
         '
         Me.lbl_start_lose.AutoSize = True
         Me.lbl_start_lose.Font = New System.Drawing.Font("Microsoft Sans Serif", 16.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_start_lose.Location = New System.Drawing.Point(460, 27)
+        Me.lbl_start_lose.Location = New System.Drawing.Point(592, 21)
         Me.lbl_start_lose.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_start_lose.Name = "lbl_start_lose"
         Me.lbl_start_lose.Size = New System.Drawing.Size(0, 26)
@@ -165,11 +168,44 @@ Partial Class Minesweeper
         Me.txt_helperr.TabIndex = 12
         Me.txt_helperr.Text = "1"
         '
+        'reveal_btn
+        '
+        Me.reveal_btn.Location = New System.Drawing.Point(412, 21)
+        Me.reveal_btn.Margin = New System.Windows.Forms.Padding(2)
+        Me.reveal_btn.Name = "reveal_btn"
+        Me.reveal_btn.Size = New System.Drawing.Size(95, 32)
+        Me.reveal_btn.TabIndex = 14
+        Me.reveal_btn.Text = "Reveal: Off"
+        Me.reveal_btn.UseVisualStyleBackColor = True
+        '
+        'check_flags_btn
+        '
+        Me.check_flags_btn.Location = New System.Drawing.Point(511, 21)
+        Me.check_flags_btn.Margin = New System.Windows.Forms.Padding(2)
+        Me.check_flags_btn.Name = "check_flags_btn"
+        Me.check_flags_btn.Size = New System.Drawing.Size(74, 32)
+        Me.check_flags_btn.TabIndex = 15
+        Me.check_flags_btn.Text = "Check Flags"
+        Me.check_flags_btn.UseVisualStyleBackColor = True
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(412, 9)
+        Me.Label6.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(71, 13)
+        Me.Label6.TabIndex = 16
+        Me.Label6.Text = "Reveal Mode"
+        '
         'Minesweeper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(700, 436)
+        Me.Controls.Add(Me.Label6)
+        Me.Controls.Add(Me.check_flags_btn)
+        Me.Controls.Add(Me.reveal_btn)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.txt_helperr)
         Me.Controls.Add(Me.lbl_start_lose)
@@ -180,7 +216,7 @@ Partial Class Minesweeper
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.lbl_flages_left)
         Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.reset_btn)
         Me.Controls.Add(Me.btn_start)
         Me.Controls.Add(Me.txt_size)
         Me.Margin = New System.Windows.Forms.Padding(2)
@@ -192,7 +228,7 @@ Partial Class Minesweeper
     End Sub
     Friend WithEvents txt_size As TextBox
     Friend WithEvents btn_start As Button
-    Friend WithEvents Button2 As Button
+    Friend WithEvents reset_btn As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents lbl_flages_left As Label
     Friend WithEvents Label2 As Label
@@ -203,4 +239,7 @@ Partial Class Minesweeper
     Friend WithEvents lbl_start_lose As Label
     Friend WithEvents Label4 As Label
     Friend WithEvents txt_helperr As TextBox
+    Friend WithEvents reveal_btn As Button
+    Friend WithEvents check_flags_btn As Button
+    Friend WithEvents Label6 As Label
 End Class
