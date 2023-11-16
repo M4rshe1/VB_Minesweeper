@@ -9,12 +9,6 @@
     Public MinesPer100 As Integer = 30
     Public Reveal_Mode As Boolean = False
 
-
-    Private Sub Button_Click(sender As Object, e As EventArgs)
-
-
-    End Sub
-
     Private Sub Button_MouseClick(sender As Object, e As MouseEventArgs)
         Dim Button As Button = DirectCast(sender, Button)
         Dim Position As String = sender.tag
