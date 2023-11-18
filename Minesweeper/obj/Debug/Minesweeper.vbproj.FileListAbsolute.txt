@@ -15,10 +15,10 @@ C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\bin\Debug\Minesweeper.ex
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\bin\Debug\Minesweeper.pdb
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\bin\Debug\Minesweeper.xml
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.vbproj.AssemblyReference.cache
-C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.Minesweeper.resources
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.Resources.resources
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.vbproj.GenerateResource.cache
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.vbproj.CoreCompileInputs.cache
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.xml
 C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
+C:\Users\Colin\RiderProjects\VB_Minesweeper\Minesweeper\obj\Debug\Minesweeper.Minesweeper.resources
