@@ -390,14 +390,14 @@
         If value = "F" Then
             btn.ForeColor = Color.White
             btn.BackColor = ColorTranslator.FromHtml("#5e5c67")
-            btn.last_color = ColorTranslator.FromHtml("#5e5c67")
+            btn._last_color = ColorTranslator.FromHtml("#5e5c67")
             btn.Text = value
             FlagesPlaces += 1
             btn.Refresh()
             Exit Sub
         ElseIf value.Length = 0 Then
             btn.BackColor = ColorTranslator.FromHtml("#9fa8e3")
-            btn.last_color = ColorTranslator.FromHtml("#9fa8e3")
+            btn._last_color = ColorTranslator.FromHtml("#9fa8e3")
             btn.Text = value
             FieldsClicked -= 2
             FlagesPlaces -= 1

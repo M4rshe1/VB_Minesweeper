@@ -83,7 +83,7 @@ Partial Class Minesweeper
         Me.Label1.BackColor = System.Drawing.Color.FromArgb(CType(CType(27, Byte), Integer), CType(CType(28, Byte), Integer), CType(CType(33, Byte), Integer))
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(217, Byte), Integer), CType(CType(218, Byte), Integer), CType(CType(223, Byte), Integer))
-        Me.Label1.Location = New System.Drawing.Point(21, 64)
+        Me.Label1.Location = New System.Drawing.Point(20, 65)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(58, 17)
@@ -96,7 +96,7 @@ Partial Class Minesweeper
         Me.lbl_flages_left.BackColor = System.Drawing.Color.FromArgb(CType(CType(27, Byte), Integer), CType(CType(28, Byte), Integer), CType(CType(33, Byte), Integer))
         Me.lbl_flages_left.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lbl_flages_left.ForeColor = System.Drawing.Color.FromArgb(CType(CType(217, Byte), Integer), CType(CType(218, Byte), Integer), CType(CType(223, Byte), Integer))
-        Me.lbl_flages_left.Location = New System.Drawing.Point(62, 64)
+        Me.lbl_flages_left.Location = New System.Drawing.Point(73, 65)
         Me.lbl_flages_left.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_flages_left.Name = "lbl_flages_left"
         Me.lbl_flages_left.Size = New System.Drawing.Size(0, 17)
