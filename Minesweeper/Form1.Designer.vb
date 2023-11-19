@@ -39,8 +39,6 @@ Partial Class Minesweeper
         Me.reveal_btn = New System.Windows.Forms.Button()
         Me.check_flags_btn = New System.Windows.Forms.Button()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.lbl_debuge = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'txt_size
@@ -241,39 +239,12 @@ Partial Class Minesweeper
         Me.Label6.TabIndex = 16
         Me.Label6.Text = "Reveal Mode"
         '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.BackColor = System.Drawing.Color.FromArgb(CType(CType(27, Byte), Integer), CType(CType(28, Byte), Integer), CType(CType(33, Byte), Integer))
-        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.ForeColor = System.Drawing.Color.FromArgb(CType(CType(217, Byte), Integer), CType(CType(218, Byte), Integer), CType(CType(223, Byte), Integer))
-        Me.Label7.Location = New System.Drawing.Point(21, 87)
-        Me.Label7.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(62, 17)
-        Me.Label7.TabIndex = 17
-        Me.Label7.Text = "Debuge:"
-        '
-        'lbl_debuge
-        '
-        Me.lbl_debuge.AutoSize = True
-        Me.lbl_debuge.BackColor = System.Drawing.Color.FromArgb(CType(CType(27, Byte), Integer), CType(CType(28, Byte), Integer), CType(CType(33, Byte), Integer))
-        Me.lbl_debuge.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_debuge.ForeColor = System.Drawing.Color.FromArgb(CType(CType(217, Byte), Integer), CType(CType(218, Byte), Integer), CType(CType(223, Byte), Integer))
-        Me.lbl_debuge.Location = New System.Drawing.Point(87, 87)
-        Me.lbl_debuge.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.lbl_debuge.Name = "lbl_debuge"
-        Me.lbl_debuge.Size = New System.Drawing.Size(0, 17)
-        Me.lbl_debuge.TabIndex = 18
-        '
         'Minesweeper
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(27, Byte), Integer), CType(CType(28, Byte), Integer), CType(CType(33, Byte), Integer))
         Me.ClientSize = New System.Drawing.Size(700, 436)
-        Me.Controls.Add(Me.lbl_debuge)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.check_flags_btn)
         Me.Controls.Add(Me.reveal_btn)
@@ -315,6 +286,4 @@ Partial Class Minesweeper
     Friend WithEvents reveal_btn As Button
     Friend WithEvents check_flags_btn As Button
     Friend WithEvents Label6 As Label
-    Friend WithEvents Label7 As Label
-    Friend WithEvents lbl_debuge As Label
 End Class

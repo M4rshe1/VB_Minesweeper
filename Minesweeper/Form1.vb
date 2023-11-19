@@ -62,42 +62,42 @@
             End If
             FirstClick = False
             _lbl_flages_left.Text = Mines - FlagesPlaces
-                'Normal Right Click
-            ElseIf e.Button = MouseButtons.Right Then
-                If Button.Text = "" AndAlso FlagesPlaces < Mines Then
-                    SetButtonTextColor(Button, "F")
-                    If Field(Pos_y, Pos_x) >= 9 Then
-                        MinesFound += 1
-                    End If
-                ElseIf Button.Text = "F" Then
-                    SetButtonTextColor(Button, "")
-                    If Field(Pos_y, Pos_x) >= 9 Then
-                        MinesFound -= 1
-                    End If
-                End If
-                _lbl_flages_left.Text = Mines - FlagesPlaces
-
-                'Reveal Mode Enabled
-            ElseIf Reveal_Mode Then
-                FirstClick = False
-                If Button.Text = "F" Then
-                    Exit Sub
-                End If
+            'Normal Right Click
+        ElseIf e.Button = MouseButtons.Right Then
+            If Button.Text = "" AndAlso FlagesPlaces < Mines Then
+                SetButtonTextColor(Button, "F")
                 If Field(Pos_y, Pos_x) >= 9 Then
-                    SetButtonTextColor(Button, "F")
                     MinesFound += 1
-                    _lbl_flages_left.Text = Mines - FlagesPlaces
-                Else
-
-                    CheckSurroundingZeros(Pos_y, Pos_x)
                 End If
-                Button.Refresh()
+            ElseIf Button.Text = "F" Then
+                SetButtonTextColor(Button, "")
+                If Field(Pos_y, Pos_x) >= 9 Then
+                    MinesFound -= 1
+                End If
+            End If
+            _lbl_flages_left.Text = Mines - FlagesPlaces
 
-                'Normal Left Click
+            'Reveal Mode Enabled
+        ElseIf Reveal_Mode Then
+            FirstClick = False
+            If Button.Text = "F" Then
+                Exit Sub
+            End If
+            If Field(Pos_y, Pos_x) >= 9 Then
+                SetButtonTextColor(Button, "F")
+                MinesFound += 1
+                _lbl_flages_left.Text = Mines - FlagesPlaces
             Else
-                'MsgBox("Y:" & Pos_y & " X: " & Pos_x & vbNewLine & "Value: " & Field(Pos_y, Pos_x))
 
-                If Button.Text = "F" Then
+                CheckSurroundingZeros(Pos_y, Pos_x)
+            End If
+            Button.Refresh()
+
+            'Normal Left Click
+        Else
+            'MsgBox("Y:" & Pos_y & " X: " & Pos_x & vbNewLine & "Value: " & Field(Pos_y, Pos_x))
+
+            If Button.Text = "F" Then
                 Exit Sub
             End If
             If Field(Pos_y, Pos_x) >= 9 Then
@@ -112,7 +112,7 @@
                 CheckSurroundingZeros(Pos_y, Pos_x)
             End If
         End If
-        _lbl_debuge.Text = MinesFound & " == " & Mines & " AND " & (FieldSize * FieldSize) & " == " & FieldsClicked
+        '_lbl_debug.Text = MinesFound & " == " & Mines & " AND " & (FieldSize * FieldSize) & " == " & FieldsClicked
         'MsgBox(MinesFound & " == " & Mines & " AND " & (FieldSize * FieldSize) & " == " & FieldsClicked)
         If MinesFound = Mines And (FieldSize * FieldSize) = FieldsClicked Then
             Reveal_Mines()
