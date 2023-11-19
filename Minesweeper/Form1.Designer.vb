@@ -88,7 +88,7 @@ Partial Class Minesweeper
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(58, 17)
         Me.Label1.TabIndex = 4
-        Me.Label1.Text = "Flages: "
+        Me.Label1.Text = "Flags: "
         '
         'lbl_flages_left
         '
