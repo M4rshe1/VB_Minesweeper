@@ -29,8 +29,11 @@
                     .Name = $"fld_{i}_{j}"
                 }
                 newButton.Font = New Font(newButton.Font, FontStyle.Bold)
-                newButton.ForeColor = Color.White
+                'no boarder
+                newButton.BorderStyle = BorderStyle.None
+                newButton.ForeColor = ColorTranslator.FromHtml("#9ea6e4")
                 newButton.BackColor = ColorTranslator.FromHtml("#9ea6e4")
+                newButton.BorderColor = ColorTranslator.FromHtml("#9ea6e4")
 
                 AddHandler newButton.MouseUp, AddressOf Button_MouseClick
 
@@ -48,7 +51,7 @@
         Dim position As String = sender.tag
         Dim posY As Integer = CInt(position.Split("_")(0))
         Dim posX As Integer = CInt(position.Split("_")(1))
-        If _visited(posY, posX) Then
+        If _visited(posY, posX) AndAlso Not button.Text = ChrW(&H2691) Then
             Exit Sub
         End If
         If _firstClick Then
@@ -64,11 +67,11 @@
             'Normal Right Click
         ElseIf e.Button = Mousebuttons.Right Then
             If button.Text = "" AndAlso _flagsPlaced < _mines Then
-                SetButtonTextColor(button, "F")
+                SetButtonTextColor(button, ChrW(&H2691))
                 If _field(posY, posX) >= 9 Then
                     _minesFound += 1
                 End If
-            ElseIf button.Text = "F" Then
+            ElseIf button.Text = CStr(ChrW(&H2691)) Then
                 SetButtonTextColor(button, "")
                 If _field(posY, posX) >= 9 Then
                     _minesFound -= 1
@@ -79,15 +82,14 @@
             'Reveal Mode Enabled
         ElseIf _revealMode Then
             _firstClick = False
-            If button.Text = "F" Then
+            If button.Text = ChrW(&H2691) Then
                 Exit Sub
             End If
             If _field(posY, posX) >= 9 Then
-                SetButtonTextColor(button, "F")
+                SetButtonTextColor(button, ChrW(&H2691))
                 _minesFound += 1
                 _lbl_flages_left.Text = _mines - _flagsPlaced
             Else
-
                 CheckSurroundingZeros(posY, posX)
             End If
             button.Refresh()
@@ -96,11 +98,11 @@
         Else
             'MsgBox("Y:" & posY & " X: " & posX & vbNewLine & "Value: " & _field(posY, posX))
 
-            If button.Text = "F" Then
+            If button.Text = ChrW(&H2691) Then
                 Exit Sub
             End If
             If _field(posY, posX) >= 9 Then
-                Reveal_Mines()
+                Reveal_Mines(posY, posX, _revealMode)
                 _lbl_start_lose.Text = "You Lose"
                 _lost = True
                 _lbl_start_lose.Refresh()
@@ -114,7 +116,7 @@
         '_lbl_debug.Text = _minesFound & " == " & _mines & " AND " & (_fieldSize * _fieldSize) & " == " & _fieldsClicked
         'MsgBox(_minesFound & " == " & _mines & " AND " & (_fieldSize * _fieldSize) & " == " & _fieldsClicked)
         If _minesFound = _mines And (_fieldSize * _fieldSize) = _fieldsClicked Then
-            Reveal_Mines()
+            Reveal_Mines(posY, posX, _revealMode)
             _lbl_start_lose.Text = "You Win"
             _lbl_start_lose.Refresh()
             win_sound()
@@ -243,7 +245,7 @@
             If _field(posX, posY) >= 9 Then
                 Dim curBtn As CustomButton = DirectCast(Controls.Item(btn), CustomButton)
                 _minesFound += 1
-                SetButtonTextColor(curBtn, "F")
+                SetButtonTextColor(curBtn, ChrW(&H2691))
             Else
                 CheckSurroundingZeros(posX, posY)
             End If
@@ -252,24 +254,44 @@
         SetButtonTextColor(Controls.Item("fld_" & (x) & "_" & (y)), CStr(_field(x, y)))
         If _fieldsClicked = (_fieldSize * _fieldSize) Then
             MsgBox("You Win")
-            Reveal_Mines()
+            Reveal_Mines(-1, -1, _revealMode)
             _firstClick = True
         End If
     End Sub
 
 
-    Private Sub Reveal_Mines()
+    Private Sub Reveal_Mines(a As Integer, b As Integer, revMode As Boolean)
         For i As Integer = 0 To _fieldSize - 1
             For j As Integer = 0 To _fieldSize - 1
                 Dim button As CustomButton = DirectCast(Controls("fld_" & i & "_" & j), CustomButton)
                 button.Enabled = False
-                If _field(i, j) >= 9 Then
+                'MsgBox("i: " & i & " j: " & j & " value: " & _field(i, j) & " visited: " & _visited(i, j))
+                If _field(i, j) >= 9 AndAlso _visited(i, j) Then
                     button.Text = "X"
-                    button.ForeColor = ColorTranslator.FromHtml("#EF4447")
+                    button.ForeColor = Color.Black
+                    button.BackColor = ColorTranslator.FromHtml("#62636d")
+                    button.BorderColor = ColorTranslator.FromHtml("#62636d")
+                ElseIf _field(i, j) >= 9 Then
+                    button.Text = "X"
+                    button.ForeColor = Color.Black
+                    button.BackColor = ColorTranslator.FromHtml("#9ea6e4")
+                ElseIf _visited(i, j) AndAlso button.Text = ChrW(&H2691) Then
+                    button.ForeColor = Color.Black
+                    button.BackColor = ColorTranslator.FromHtml("#62636d")
+                ElseIf Not _visited(i, j) Then
+                    button.BackColor = ColorTranslator.FromHtml("#9ea6e4")
                 End If
+
+
                 button.Refresh()
             Next
         Next
+        If a = b = -1 Or revMode Then
+            Exit Sub
+        End If
+        Dim btn As CustomButton = DirectCast(Controls("fld_" & a & "_" & b), CustomButton)
+        btn.BackColor = Color.Red
+        btn.BorderColor = Color.Transparent
     End Sub
 
     Private Sub reset_Click(sender As Object, e As EventArgs) Handles reset_btn.Click
@@ -338,7 +360,7 @@
                 If Controls.ContainsKey(btnName) Then
                     Dim btn As CustomButton = DirectCast(Controls(btnName), CustomButton)
 
-                    If btn.Text = "F" Then
+                    If btn.Text = ChrW(&H2691) Then
                         If Not _field(i, j) >= 9 Then
                             SetButtonTextColor(btn, "")
                         End If
@@ -385,21 +407,26 @@
     Private Sub SetButtonTextColor(btn As CustomButton, value As String)
         'MsgBox(value)
         _fieldsClicked += 1
-        If value = "F" Then
-            btn.ForeColor = Color.White
+        If value = ChrW(&H2691) Then
+            btn.ForeColor = ColorTranslator.FromHtml("#1b1c21")
             btn.BackColor = ColorTranslator.FromHtml("#5e5c67")
             btn.LastColor = ColorTranslator.FromHtml("#5e5c67")
-            btn.Text = value
+            btn.BorderColor = ColorTranslator.FromHtml("#5e5c67")
+            btn.Text = ChrW(&H2691)
             _flagsPlaced += 1
+            _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = True
             btn.Refresh()
             Exit Sub
         ElseIf value.Length = 0 Then
+            btn.ForeColor = ColorTranslator.FromHtml("#62636d")
             btn.BackColor = ColorTranslator.FromHtml("#9fa8e3")
             btn.LastColor = ColorTranslator.FromHtml("#9fa8e3")
+            btn.BorderColor = ColorTranslator.FromHtml("#9fa8e3")
             btn.Text = value
             _fieldsClicked -= 2
             _flagsPlaced -= 1
             btn.Refresh()
+            _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = False
             Exit Sub
         End If
 
@@ -408,9 +435,11 @@
         Else
             _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = True
         End If
+        btn.BorderColor = ColorTranslator.FromHtml("#62636d")
+        'border radius to 1
+        btn.CornerRadius = 5
 
         If CInt(value) <= 0 Then
-            btn.ForeColor = Color.White
             btn.Text = ""
         ElseIf CInt(value) <= 1 Then
             btn.ForeColor = ColorTranslator.FromHtml("#4140FB")
