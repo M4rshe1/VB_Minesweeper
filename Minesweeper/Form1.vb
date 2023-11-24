@@ -152,7 +152,7 @@
             button.Dispose()
         Next
     End Sub
-
+    
     Private Sub btn_start_Click(sender As Object, e As EventArgs) Handles btn_start.Click
         _firstClick = True
         If Integer.TryParse(_txt_size.Text, Nothing) Then
@@ -265,7 +265,7 @@
                 button.Enabled = False
                 If _field(i, j) >= 9 Then
                     button.Text = "X"
-                    button.ForeColor = Color.Red
+                    button.ForeColor = ColorTranslator.FromHtml("#EF4447")
                 End If
                 button.Refresh()
             Next
@@ -388,14 +388,14 @@
         If value = "F" Then
             btn.ForeColor = Color.White
             btn.BackColor = ColorTranslator.FromHtml("#5e5c67")
-            btn._last_color = ColorTranslator.FromHtml("#5e5c67")
+            btn.LastColor = ColorTranslator.FromHtml("#5e5c67")
             btn.Text = value
             _flagsPlaced += 1
             btn.Refresh()
             Exit Sub
         ElseIf value.Length = 0 Then
             btn.BackColor = ColorTranslator.FromHtml("#9fa8e3")
-            btn._last_color = ColorTranslator.FromHtml("#9fa8e3")
+            btn.LastColor = ColorTranslator.FromHtml("#9fa8e3")
             btn.Text = value
             _fieldsClicked -= 2
             _flagsPlaced -= 1
@@ -413,28 +413,28 @@
             btn.ForeColor = Color.White
             btn.Text = ""
         ElseIf CInt(value) <= 1 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#0100fa")
+            btn.ForeColor = ColorTranslator.FromHtml("#4140FB")
             btn.Text = value
         ElseIf CInt(value) <= 2 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#007f00")
+            btn.ForeColor = ColorTranslator.FromHtml("#409F40")
             btn.Text = value
         ElseIf CInt(value) <= 3 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#ea060a")
+            btn.ForeColor = ColorTranslator.FromHtml("#EF4447")
             btn.Text = value
         ElseIf CInt(value) <= 4 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#01007f")
+            btn.ForeColor = ColorTranslator.FromHtml("#41409F")
             btn.Text = value
         ElseIf CInt(value) <= 5 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#7c0302")
+            btn.ForeColor = ColorTranslator.FromHtml("#9D4241")
             btn.Text = value
         ElseIf CInt(value) <= 6 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#00807f")
+            btn.ForeColor = ColorTranslator.FromHtml("#40A09F")
             btn.Text = value
         ElseIf CInt(value) <= 7 Then
             btn.ForeColor = Color.Black
             btn.Text = value
         ElseIf CInt(value) <= 8 Then
-            btn.ForeColor = ColorTranslator.FromHtml("#808080")
+            btn.ForeColor = ColorTranslator.FromHtml("#A0A0A0")
             btn.Text = value
         End If
         btn.Enabled = False

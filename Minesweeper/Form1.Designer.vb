@@ -86,7 +86,7 @@ Partial Class Minesweeper
         Me.Label1.Location = New System.Drawing.Point(20, 65)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(58, 17)
+        Me.Label1.Size = New System.Drawing.Size(50, 17)
         Me.Label1.TabIndex = 4
         Me.Label1.Text = "Flags: "
         '

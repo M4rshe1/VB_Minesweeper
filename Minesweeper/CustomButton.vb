@@ -32,12 +32,12 @@
             End If
         End Set
     End Property
-    Public _last_color As Color
+    Public LastColor As Color
     Private Sub OnMouseEnter(sender As Object, e As EventArgs)
         If _enabled Then
-            _last_color = Me.BackColor
+            LastColor = Me.BackColor
             Dim alpha As Integer = CInt(255 * 0.8)
-            Dim newBackColor As Color = Color.FromArgb(alpha, _last_color.R, _last_color.G, _last_color.B)
+            Dim newBackColor As Color = Color.FromArgb(alpha, LastColor.R, LastColor.G, LastColor.B)
             Me.BackColor = newBackColor
         End If
         Me.Refresh()
@@ -45,7 +45,7 @@
 
     Private Sub OnMouseLeave(sender As Object, e As EventArgs)
         If _enabled Then
-            Me.BackColor = _last_color
+            Me.BackColor = LastColor
         End If
         Me.Refresh()
     End Sub
