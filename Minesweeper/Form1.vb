@@ -286,7 +286,7 @@
                 button.Refresh()
             Next
         Next
-        If a = b = -1 Or revMode Then
+        If a = b = -1 Or revMode Or _minesFound = _mines Then
             Exit Sub
         End If
         Dim btn As CustomButton = DirectCast(Controls("fld_" & a & "_" & b), CustomButton)
