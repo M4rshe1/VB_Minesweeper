@@ -15,7 +15,7 @@
     Private Sub Build_Field()
         Const buttonWidth As Integer = 25
         Const buttonHeight As Integer = 25
-        Const spacing As Integer = 0
+        Const spacing As Integer = 1
 
         For i As Integer = 0 To _fieldSize - 1
             For j As Integer = 0 To _fieldSize - 1
@@ -28,15 +28,14 @@
                     .Tag = $"{i}_{j}",
                     .Name = $"fld_{i}_{j}"
                 }
+
                 newButton.Font = New Font(newButton.Font, FontStyle.Bold)
-                'no boarder
                 newButton.BorderStyle = BorderStyle.None
                 newButton.ForeColor = ColorTranslator.FromHtml("#9ea6e4")
                 newButton.BackColor = ColorTranslator.FromHtml("#9ea6e4")
                 newButton.BorderColor = ColorTranslator.FromHtml("#9ea6e4")
 
                 AddHandler newButton.MouseUp, AddressOf Button_MouseClick
-
 
                 Controls.Add(newButton)
             Next
@@ -47,25 +46,30 @@
         If _lost Then
             Exit Sub
         End If
+
         Dim button As CustomButton = DirectCast(sender, CustomButton)
         Dim position As String = sender.tag
         Dim posY As Integer = CInt(position.Split("_")(0))
         Dim posX As Integer = CInt(position.Split("_")(1))
+
         If _visited(posY, posX) AndAlso Not button.Text = ChrW(&H2691) Then
             Exit Sub
         End If
+
         If _firstClick Then
             Fill_Field_Matrix(posY, posX)
             check_first_radius(posY, posX)
 
             If (_radius * 2 + 1) ^ 2 < _fieldsClicked Then
                 _fieldsClicked -= 1
-                'MsgBox((_radius * 2 + 1) ^ 2 & "     " & _fieldsClicked)
             End If
             _firstClick = False
             _lbl_flages_left.Text = _mines - _flagsPlaced
-            'Normal Right Click
-        ElseIf e.Button = Mousebuttons.Right Then
+            Exit Sub
+        End If
+
+        'Normal Right Click
+        If e.Button = Mousebuttons.Right Then
             If button.Text = "" AndAlso _flagsPlaced < _mines Then
                 SetButtonTextColor(button, ChrW(&H2691))
                 If _field(posY, posX) >= 9 Then
@@ -81,7 +85,6 @@
 
             'Reveal Mode Enabled
         ElseIf _revealMode Then
-            _firstClick = False
             If button.Text = ChrW(&H2691) Then
                 Exit Sub
             End If
@@ -97,7 +100,6 @@
             'Normal Left Click
         Else
             'MsgBox("Y:" & posY & " X: " & posX & vbNewLine & "Value: " & _field(posY, posX))
-
             If button.Text = ChrW(&H2691) Then
                 Exit Sub
             End If
@@ -113,7 +115,6 @@
                 CheckSurroundingZeros(posY, posX)
             End If
         End If
-        '_lbl_debug.Text = _minesFound & " == " & _mines & " AND " & (_fieldSize * _fieldSize) & " == " & _fieldsClicked
         'MsgBox(_minesFound & " == " & _mines & " AND " & (_fieldSize * _fieldSize) & " == " & _fieldsClicked)
         If _minesFound = _mines And (_fieldSize * _fieldSize) = _fieldsClicked Then
             Reveal_Mines(posY, posX, _revealMode)
@@ -189,10 +190,10 @@
                 If i = y AndAlso j = x Then
                     Exit For
                 End If
+
                 Dim randomValue As Double = rand.NextDouble()
 
                 If randomValue < threshold Then
-
                     _field(i, j) = 9
                     _mines += 1
                     check_mineRadius(i, j)
@@ -205,56 +206,47 @@
     End Sub
 
     Private Sub check_mineRadius(x, y)
-        Dim buttons As New List(Of String)
-
         Dim mineRadius As Integer = 1
 
         For i As Integer = -mineRadius To mineRadius
             For j As Integer = -mineRadius To mineRadius
                 If i = 0 And j = 0 Then Continue For
-
-                buttons.Add("fld_" & (x + i) & "_" & (y + j))
+                If Not Controls.ContainsKey("fld_" & (x + i) & "_" & (y + j)) Then
+                    Continue For
+                Else
+                    _field(x + i, y + j) += 1
+                End If
             Next
         Next
-        For Each btn As String In buttons
-            If Not Controls.ContainsKey(btn) Then
-                Continue For
-            Else
-                _field(CInt(btn.Split("_")(1)), CInt(btn.Split("_")(2))) += 1
-            End If
-        Next
-
     End Sub
 
     Private Sub check_first_radius(x, y)
-        Dim buttons As New List(Of String)
         Integer.TryParse(txt_helperr.Text, _radius)
 
         For i As Integer = -_radius To _radius
             For j As Integer = -_radius To _radius
                 If i = 0 And j = 0 Then Continue For
-                buttons.Add("fld_" & (x + i) & "_" & (y + j))
+                Dim posX As Integer = x + i
+                Dim posY As Integer = y + j
+                If Not Controls.ContainsKey("fld_" & (x + i) & "_" & (y + j)) Then
+                    Continue For
+                End If
+                If _field(posX, posY) >= 9 Then
+                    Dim curBtn As CustomButton = DirectCast(Controls.Item("fld_" & (x + i) & "_" & (y + j)), CustomButton)
+                    _minesFound += 1
+                    SetButtonTextColor(curBtn, ChrW(&H2691))
+                Else
+                    CheckSurroundingZeros(posX, posY)
+                End If
             Next
-        Next
-        For Each btn As String In buttons
-            Dim posX As Integer = CInt(btn.Split("_")(1))
-            Dim posY As Integer = CInt(btn.Split("_")(2))
-            If Not Controls.ContainsKey(btn) Then
-                Continue For
-            End If
-            If _field(posX, posY) >= 9 Then
-                Dim curBtn As CustomButton = DirectCast(Controls.Item(btn), CustomButton)
-                _minesFound += 1
-                SetButtonTextColor(curBtn, ChrW(&H2691))
-            Else
-                CheckSurroundingZeros(posX, posY)
-            End If
         Next
 
         SetButtonTextColor(Controls.Item("fld_" & (x) & "_" & (y)), CStr(_field(x, y)))
         If _fieldsClicked = (_fieldSize * _fieldSize) Then
-            MsgBox("You Win")
+            _lbl_start_lose.Text = "You Win"
+            _lbl_start_lose.Refresh()
             Reveal_Mines(-1, -1, _revealMode)
+            win_sound()
             _firstClick = True
         End If
     End Sub
@@ -266,23 +258,25 @@
                 Dim button As CustomButton = DirectCast(Controls("fld_" & i & "_" & j), CustomButton)
                 button.Enabled = False
                 'MsgBox("i: " & i & " j: " & j & " value: " & _field(i, j) & " visited: " & _visited(i, j))
+                'Is a Mine and was visited
                 If _field(i, j) >= 9 AndAlso _visited(i, j) Then
                     button.Text = "X"
                     button.ForeColor = Color.Black
                     button.BackColor = ColorTranslator.FromHtml("#62636d")
                     button.BorderColor = ColorTranslator.FromHtml("#62636d")
+                    'Is a Mine
                 ElseIf _field(i, j) >= 9 Then
                     button.Text = "X"
                     button.ForeColor = Color.Black
                     button.BackColor = ColorTranslator.FromHtml("#9ea6e4")
+                    'Is visited and is also flagged and not a Mine
                 ElseIf _visited(i, j) AndAlso button.Text = ChrW(&H2691) Then
                     button.ForeColor = Color.Black
                     button.BackColor = ColorTranslator.FromHtml("#62636d")
+                    'Is visited
                 ElseIf Not _visited(i, j) Then
                     button.BackColor = ColorTranslator.FromHtml("#9ea6e4")
                 End If
-
-
                 button.Refresh()
             Next
         Next
@@ -316,8 +310,8 @@
 
     Private Sub lose_sound()
         ' Loss melody
-        Dim melodyFreq() As Integer = {784, 698, 659, 587, 523, 494, 440, 392}
-        Dim noteDuration As Integer = 100
+        Dim melodyFreq() As Integer = {392, 349, 330, 294, 262, 247, 220, 196}
+        Dim noteDuration As Integer = 200
 
         For Each freq As Integer In melodyFreq
             Console.Beep(freq, noteDuration)
@@ -326,13 +320,14 @@
 
     Private Sub win_sound()
         ' Victory melody
-        Dim melodyFreq() As Integer = {392, 440, 494, 523.0R, 587, 659, 698, 784}
-        Dim noteDuration As Integer = 50
+        Dim melodyFreq() As Integer = {196, 220, 247, 262, 294, 330, 349, 392}
+        Dim noteDuration As Integer = 100
 
         For Each freq As Integer In melodyFreq
             Console.Beep(freq, noteDuration)
         Next
     End Sub
+
 
     Private Sub txt_mines_per_TextChanged(sender As Object, e As EventArgs) Handles txt_minesp.TextChanged, txt_size.TextChanged, txt_helperr.TextChanged
         Dim txtBox As TextBox = DirectCast(sender, TextBox)
@@ -357,14 +352,17 @@
         For i As Integer = 0 To _fieldSize - 1
             For j As Integer = 0 To _fieldSize - 1
                 Dim btnName As String = "fld_" & i & "_" & j
-                If Controls.ContainsKey(btnName) Then
-                    Dim btn As CustomButton = DirectCast(Controls(btnName), CustomButton)
+                If Not Controls.ContainsKey(btnName) Then
+                    Continue For
+                End If
 
-                    If btn.Text = ChrW(&H2691) Then
-                        If Not _field(i, j) >= 9 Then
-                            SetButtonTextColor(btn, "")
-                        End If
-                    End If
+                Dim btn As CustomButton = DirectCast(Controls(btnName), CustomButton)
+
+                If Not btn.Text = ChrW(&H2691) Then
+                    Continue For
+                End If
+                If Not _field(i, j) >= 9 Then
+                    SetButtonTextColor(btn, "")
                 End If
             Next
         Next
@@ -374,32 +372,36 @@
     Private Sub CheckSurroundingZeros(ByVal y As Integer, ByVal x As Integer)
         If y >= 0 AndAlso y < _field.GetLength(0) AndAlso x >= 0 AndAlso x < _field.GetLength(1) Then
             Dim controlName As String = "fld_" & y & "_" & x
-            If Not _visited(y, x) Then
-                If Controls.ContainsKey(controlName) AndAlso TypeOf Controls(controlName) Is CustomButton AndAlso _field(y, x) = 0 Then
-                    Dim btn As CustomButton = DirectCast(Controls(controlName), CustomButton)
 
-                    If Not btn.Enabled = False Then
-                        SetButtonTextColor(btn, "0")
-                    Else
-                        SetButtonTextColor(btn, CStr(_field(y, x)))
-                        _visited(y, x) = True
-                    End If
+            If  Not TypeOf Controls(controlName) Is CustomButton Or Not Controls.ContainsKey(controlName) Or _visited(y, x) Then
+                Exit Sub
+            End If
 
-                    CheckSurroundingZeros(y - 1, x) ' Up
-                    CheckSurroundingZeros(y + 1, x) ' Down
-                    CheckSurroundingZeros(y, x - 1) ' Left
-                    CheckSurroundingZeros(y, x + 1) ' Right
-                    CheckSurroundingZeros(y - 1, x + 1) ' Top Right
-                    CheckSurroundingZeros(y - 1, x - 1) ' Top Left
-                    CheckSurroundingZeros(y + 1, x + 1) ' Bottom Right
-                    CheckSurroundingZeros(y + 1, x - 1) ' Bottom Left
+            Dim btn As CustomButton = DirectCast(Controls(controlName), CustomButton)
+
+            If _field(y, x) = 0 Then
 
 
-
-                ElseIf Controls.ContainsKey(controlName) AndAlso TypeOf Controls(controlName) Is CustomButton Then
-                    Dim btn As CustomButton = DirectCast(Controls(controlName), CustomButton)
+                If Not btn.Enabled = False Then
+                    SetButtonTextColor(btn, "0")
+                Else
                     SetButtonTextColor(btn, CStr(_field(y, x)))
+                    _visited(y, x) = True
                 End If
+
+                CheckSurroundingZeros(y - 1, x) ' Up
+                CheckSurroundingZeros(y + 1, x) ' Down
+                CheckSurroundingZeros(y, x - 1) ' Left
+                CheckSurroundingZeros(y, x + 1) ' Right
+                CheckSurroundingZeros(y - 1, x + 1) ' Top Right
+                CheckSurroundingZeros(y - 1, x - 1) ' Top Left
+                CheckSurroundingZeros(y + 1, x + 1) ' Bottom Right
+                CheckSurroundingZeros(y + 1, x - 1) ' Bottom Left
+
+
+
+            ElseIf Controls.ContainsKey(controlName) Then
+                SetButtonTextColor(btn, CStr(_field(y, x)))
             End If
         End If
     End Sub
@@ -407,6 +409,8 @@
     Private Sub SetButtonTextColor(btn As CustomButton, value As String)
         'MsgBox(value)
         _fieldsClicked += 1
+        Dim pos1 as Integer = CInt(btn.Name.Split("_")(1))
+        Dim pos2 As Integer = CInt(btn.Name.Split("_")(2))
         If value = ChrW(&H2691) Then
             btn.ForeColor = ColorTranslator.FromHtml("#1b1c21")
             btn.BackColor = ColorTranslator.FromHtml("#5e5c67")
@@ -414,7 +418,7 @@
             btn.BorderColor = ColorTranslator.FromHtml("#5e5c67")
             btn.Text = ChrW(&H2691)
             _flagsPlaced += 1
-            _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = True
+            _visited(pos1, pos2) = True
             btn.Refresh()
             Exit Sub
         ElseIf value.Length = 0 Then
@@ -426,14 +430,14 @@
             _fieldsClicked -= 2
             _flagsPlaced -= 1
             btn.Refresh()
-            _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = False
+            _visited(pos1, pos2) = False
             Exit Sub
         End If
 
-        If _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) Then
+        If _visited(pos1, pos2) Then
             Exit Sub
         Else
-            _visited(btn.Name.Split("_")(1), btn.Name.Split("_")(2)) = True
+            _visited(pos1, pos2) = True
         End If
         btn.BorderColor = ColorTranslator.FromHtml("#62636d")
         'border radius to 1

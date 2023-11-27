@@ -20,7 +20,6 @@ Public Class CustomButton
 
         AddHandler Me.MouseEnter, AddressOf OnMouseEnter
         AddHandler Me.MouseLeave, AddressOf OnMouseLeave
-        AddHandler Me.Click, AddressOf OnClick
         AddHandler Me.MouseUp, AddressOf OnClick
     End Sub
 
@@ -50,16 +49,6 @@ Public Class CustomButton
         End Get
         Set(value As Integer)
             _cornerRadius = value
-            Me.Refresh()
-        End Set
-    End Property
-
-    Public Property BorderThickness As Integer
-        Get
-            Return _borderThickness
-        End Get
-        Set(value As Integer)
-            _borderThickness = value
             Me.Refresh()
         End Set
     End Property
